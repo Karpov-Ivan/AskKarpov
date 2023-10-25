@@ -1,0 +1,37 @@
+main > .container {
+  padding: 60px 15px 0;
+}
+
+.navbar-brand {
+    font-size: 30px;
+    font-family: Helvetica;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+.form-control.me-2 {
+    width: 500px;
+    margin-left: 100px;
+}
+
+.row.user .avatar {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.row.user {
+    display: none;
+    color: white;
+    margin-right: 50px;
+    max-width: 500px;
+}
+
+.row.noauthuser {
+    color: white;
+    margin-right: 50px;
+    max-width: 500px;
+}
+
+.form-group {
+    margin: 20px 0px 20px 0px;
+}
