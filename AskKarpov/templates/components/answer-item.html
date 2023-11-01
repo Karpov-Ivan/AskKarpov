@@ -1,0 +1,20 @@
+{% load static %}
+
+<div class="row answer" style="margin: 20px 0px 20px 0px; padding: 20px; border-radius: 10px; border: 1px solid grey;">
+     <div class="col-3">
+       <img src="{% static '/img/css_ava.png' %}" alt="" class="question-image"/>
+       <div class="like-container d-flex flex-column align-items-center">
+         <img src="{% static '/img/like.png' %}" alt="Like" class="like-button"/>
+         <p class="like-count">0</p>
+       </div>
+     </div>
+     <div class="col-9">
+       <div class="question-text">{{ answer.content }}</div>
+       <div class="question-actions">
+         <div class="form-check">
+           <input type="checkbox" class="form-check-input" id="exampleCheck1">
+           <label class="form-check-label" for="exampleCheck1">Correct!</label>
+         </div>
+       </div>
+     </div>
+</div>

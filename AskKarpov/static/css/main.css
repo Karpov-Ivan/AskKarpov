@@ -48,8 +48,7 @@ main > .container {
     max-width: 500px;
 }
 
-.row.noauthuser {
-    display: none;
+.row.nouser {
     color: white;
     margin-right: 50px;
     max-width: 500px;
@@ -75,4 +74,20 @@ main > .container {
     max-width: 20px;
     max-height: 20px;
     margin-top: 30px;
+}
+
+.answer {
+    border: 1px solid grey;
+    margin: 20px 0px 20px 0px;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: black;
+}
+
+.answer-div {
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+    border-left: 0;
+    border-right: 0;
+    background-color: black;
 }

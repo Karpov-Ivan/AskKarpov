@@ -1,0 +1,21 @@
+{% load static %}
+
+<div class="row question">
+    <div class="col-3">
+      <img src="{% static '/img/css_ava.png' %}" alt="" class="question-image"/>
+      <div class="like-container d-flex flex-column align-items-center">
+        <img src="{% static '/img/like.png' %}" alt="Like" class="like-button"/>
+        <p class="like-count">0</p>
+      </div>
+    </div>
+    <div class="col-9">
+      <div class="question-title"><a href="{% url 'question' question.id %}">{{ question.title }}</a></div>
+      <div class="question-text">{{ question.content }}</div>
+      <div class="question-actions">
+        <a href="">answer(3)</a>
+        <span class="tags-label">Tags:</span>
+        <a href="{% url 'tag' 'Python' %}">Python</a>
+        <a href="{% url 'tag' 'Perl' %}">Perl</a>
+      </div>
+    </div>
+</div>
