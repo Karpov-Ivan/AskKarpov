@@ -6,35 +6,19 @@
 
 <br>
 
- <div class="answer-div" style="border-top: 1px solid grey; border-bottom: 1px solid grey; border-left: 0; border-right: 0;">
-    {% for answer in answers %}
+ <div class="answer-div">
+    {% for answer in questions %}
 
     {% include 'components/answer-item.html' %}
 
     {% endfor %}
 
-     <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center">
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="">1</a></li>
-            <li class="page-item"><a class="page-link" href="">2</a></li>
-            <li class="page-item"><a class="page-link" href="">3</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-    </nav>
+    {% include 'components/paginate-item.html' %}
 
  </div>
 
  <form>
-   <div class="form-group" style="margin: 20px 0px 20px 0px;">
+   <div class="form-group">
      <textarea class="form-control" id="exampleTextarea" rows="7" placeholder="Enter your answer here..."></textarea>
    </div>
    <button type="submit" class="btn btn-secondary">Answer</button>
