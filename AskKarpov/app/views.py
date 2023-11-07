@@ -3,21 +3,6 @@ from django.core.paginator import Paginator
 
 from .models import Question, Answer
 
-QUESTIONS = [
-    {
-        'id': i,
-        'title': f'Question {i}',
-        'content': f'Long lorem ipsum {i}'
-    } for i in range(20)
-]
-
-ANSWERS = [
-    {
-        'id': i,
-        'content': f'Long lorem ipsum {i}'
-    } for i in range(15)
-]
-
 
 def paginate(request, objects, per_page=5):
     page_number = request.GET.get('page')

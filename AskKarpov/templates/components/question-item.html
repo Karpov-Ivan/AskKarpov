@@ -3,13 +3,13 @@
 <div class="row question">
     <div class="col-3">
       {% if question.profile.avatar %}
-        <img src="{{ question.profile.avatar }}" alt="Avatar" class="question-image"/>
+        <img src="{{ question.asker.profile.avatar.url }}" alt="Avatar" class="question-image"/>
       {% else %}
         <img src="{% static '/img/css_ava.png' %}" alt="Default Avatar" class="question-image"/>
       {% endif %}
       <div class="like-container d-flex flex-column align-items-center">
         <img src="{% static '/img/like.png' %}" alt="Like" class="like-button"/>
-        <p class="like-count">{{ question.like.count }}</p>
+        <p class="like-count">{{ question.rating }}</p>
       </div>
     </div>
     <div class="col-9">
