@@ -2,25 +2,30 @@
 
 <div class="row question">
     <div class="col-3">
-      {% if question.profile.avatar %}
+        {% if question.profile.avatar %}
         <img src="{{ question.asker.profile.avatar.url }}" alt="Avatar" class="question-image"/>
-      {% else %}
+        {% else %}
         <img src="{% static '/img/css_ava.png' %}" alt="Default Avatar" class="question-image"/>
-      {% endif %}
-      <div class="like-container d-flex flex-column align-items-center">
-        <img src="{% static '/img/like.png' %}" alt="Like" class="like-button"/>
-        <p class="like-count">{{ question.rating }}</p>
-      </div>
+        {% endif %}
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <button class="btn btn-outline-secondary" type="button" id="subtractBtn">-</button>
+            </div>
+            <input type="text" class="form-control text-center" id="counterValue" value={{ question.rating }}>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="addBtn">+</button>
+            </div>
+        </div>
     </div>
     <div class="col-9">
-      <div class="question-title"><a href="{% url 'question' question.id %}">{{ question.title }}</a></div>
-      <div class="question-text">{{ question.text }}</div>
-      <div class="question-actions">
-        <a href="#">answers ({{ question.answers.count }})</a>
-        <span class="tags-label">Tags:</span>
-        {% for tag in question.tags.all %}
+        <div class="question-title"><a href="{% url 'question' question.id %}">{{ question.title }}</a></div>
+        <div class="question-text">{{ question.text }}</div>
+        <div class="question-actions">
+            <a href="#">answers ({{ question.answers.count }})</a>
+            <span class="tags-label">Tags:</span>
+            {% for tag in question.tags.all %}
             <a href="{% url 'tag' tag.name %}">{{ tag.name }}</a>
-        {% endfor %}
-      </div>
+            {% endfor %}
+        </div>
     </div>
 </div>

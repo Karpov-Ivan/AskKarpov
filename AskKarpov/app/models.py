@@ -23,7 +23,7 @@ class QuestionManager(models.Manager):
             negative_likes = LikeQuestion.objects.filter(question=question, positive=False).count()
 
             question.rating = positive_likes - negative_likes
-            # question.save()
+            question.save()
 
         return questions
 
@@ -41,7 +41,7 @@ class AnswerManager(models.Manager):
             negative_likes = LikeAnswer.objects.filter(answer=answer, positive=False).count()
 
             answer.rating = positive_likes - negative_likes
-            #answer.save()
+            answer.save()
 
         return answers
 

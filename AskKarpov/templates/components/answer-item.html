@@ -7,9 +7,14 @@
         {% else %}
         <img src="{% static '/img/css_ava.png' %}" alt="Default Avatar" class="question-image"/>
         {% endif %}
-        <div class="like-container d-flex flex-column align-items-center">
-            <img src="{% static '/img/like.png' %}" alt="Like" class="like-button"/>
-            <p class="like-count">{{ answer.rating }}</p>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <button class="btn btn-outline-secondary" type="button" id="subtractBtn">-</button>
+            </div>
+            <input type="text" class="form-control text-center" id="counterValue" value={{ answer.rating }}>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="addBtn">+</button>
+            </div>
         </div>
     </div>
     <div class="col-9">

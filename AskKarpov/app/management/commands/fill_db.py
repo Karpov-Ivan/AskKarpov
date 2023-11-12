@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from app.models import Profile, Question, Answer, Tag, LikeQuestion, LikeAnswer
 import random
-from django.db.utils import IntegrityError
 
 
 class Command(BaseCommand):
