@@ -4,46 +4,18 @@ from django.contrib.auth.models import User
 
 class QuestionManager(models.Manager):
     def new(self):
-        questions = self.calculated_rating()
-        return questions.order_by('-rating', '-date')
+        return self.all().order_by('-rating', '-date')
 
     def tag(self, tag_name):
-        questions = self.calculated_rating()
-        return questions.filter(tags__name=tag_name).order_by('-rating')
+        return self.filter(tags__name=tag_name).order_by('-rating')
 
     def best(self):
-        questions = self.calculated_rating()
-        return questions.order_by('-rating')
-
-    def calculated_rating(self):
-        questions = self.all()
-
-        for question in questions:
-            positive_likes = LikeQuestion.objects.filter(question=question, positive=True).count()
-            negative_likes = LikeQuestion.objects.filter(question=question, positive=False).count()
-
-            question.rating = positive_likes - negative_likes
-            question.save()
-
-        return questions
+        return self.all().order_by('-rating')
 
 
 class AnswerManager(models.Manager):
     def new(self):
-        answers = self.calculated_rating()
-        return answers.order_by('-rating', '-date')
-
-    def calculated_rating(self):
-        answers = self.all()
-
-        for answer in answers:
-            positive_likes = LikeAnswer.objects.filter(answer=answer, positive=True).count()
-            negative_likes = LikeAnswer.objects.filter(answer=answer, positive=False).count()
-
-            answer.rating = positive_likes - negative_likes
-            answer.save()
-
-        return answers
+        return self.order_by('-rating', '-date')
 
 
 class Profile(models.Model):
