@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.core.paginator import Paginator
 from django.http import Http404
+from django.contrib.auth import login as auth_login, authenticate
+from .forms import LoginForm
 
 from .models import Question
 
@@ -54,8 +56,24 @@ def tag(request, tag_name):
 
 
 def login(request):
-    return render(request, template_name='login.html')
+    print(request.POST)
+    if request.method == 'GET':
+        login_form = LoginForm(request.POST)
+    if request.method == 'POST':
+        login_form = LoginForm(request.POST)
+        if login_form.is_valid():
+            user = authenticate(request, **login_form.cleaned_data)
+            if user is not None:
+                auth_login(request, user)
+                return redirect(reverse('index'))
+            else:
+                login_form.add_error(None, "Wrong password and user does not exist.")
 
+    return render(request, template_name='login.html', context={"form": login_form})
+
+def logout(request):
+    auth.logout(request)
+    return redirect(reverse('login'))
 
 def signup(request):
     return render(request, template_name='signup.html')
