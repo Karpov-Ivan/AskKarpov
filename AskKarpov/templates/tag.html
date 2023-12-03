@@ -12,6 +12,8 @@
 
 {% endfor %}
 
+{% if questions.has_other_pages %}
 {% include 'components/paginate-item.html' %}
+{% endif %}
 
 {% endblock %}

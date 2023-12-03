@@ -8,14 +8,16 @@
 
 <br>
 
-<div class="answer-div">
+<div class="answer-div" id="answer-{{ answer.id }}">
     {% for answer in questions %}
 
-    {% include 'components/answer-item.html' %}
+    {% include 'components/answer-item.html' with answer_id=answer.id %}
 
     {% endfor %}
 
+    {% if questions.has_other_pages %}
     {% include 'components/paginate-item.html' %}
+    {% endif %}
 
 </div>
 

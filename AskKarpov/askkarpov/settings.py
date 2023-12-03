@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_bootstrap5',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
+
+CRONJOBS = [
+    ('0 * * * *', 'app/top.py'),
+]
+
+CRONTAB_LOCK_JOBS = True

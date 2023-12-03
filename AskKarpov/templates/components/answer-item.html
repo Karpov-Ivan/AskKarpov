@@ -1,6 +1,6 @@
 {% load static %}
 
-<div class="row answer">
+<div class="row answer" id="answer-{{ answer_id }}">
     <div class="col-3">
         {% if answer.profile.avatar %}
         <img src="{{ answer.author.profile.avatar.url }}" alt="Avatar" class="question-image"/>

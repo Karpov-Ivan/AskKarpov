@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect, reverse
 from django.core.paginator import Paginator
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
-from .forms import LoginForm, RegisterForm, AnswerForm
+from .forms import LoginForm, RegisterForm, AnswerForm, ProfileForm, AskQuestionForm
 from django.urls import reverse
-
 from .models import Question
+from django.db import transaction
 
 
 def paginate(request, objects, per_page=10):
@@ -45,9 +45,19 @@ def question(request, question_id):
             answer_form = AnswerForm(request.POST)
             if answer_form.is_valid():
                 answer = answer_form.save(question=item, author=request.user.profile)
-                return redirect('question', question_id=question_id)
+
+                try:
+                    answers = list(answers)
+                    count = answers.index(answer)
+                except ValueError:
+                    count = 0
+
+                page_number = count // 10 + 1
+
+                anchor = f'#answer-{answer.id}'
+                return HttpResponseRedirect(reverse('question', args=[question_id]) + f'?page={page_number}' + anchor)
         else:
-            form = AnswerForm()
+            answer_form = AnswerForm()
 
         return render(request, template_name='question.html',
                       context={'question': item, 'questions': paginate(request, answers), 'form': answer_form})
@@ -118,9 +128,27 @@ def signup(request):
 
 @login_required(login_url='login', redirect_field_name='continue')
 def ask(request):
-    return render(request, template_name='ask.html')
+    if request.method == 'GET':
+        form = AskQuestionForm()
+    if request.method == 'POST':
+        form = AskQuestionForm(request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                question = form.save(user=request.user)
+                return redirect('question', question_id=question.id)
+
+    return render(request, template_name='ask.html', context={'form': form})
 
 
 @login_required(login_url='login', redirect_field_name='continue')
 def settings(request):
-    return render(request, template_name='settings.html')
+    user = request.user
+    settings_form = ProfileForm(instance=user)
+
+    if request.method == 'POST':
+        settings_form = ProfileForm(request.POST, request.FILES, instance=user)
+        if settings_form.is_valid():
+            settings_form.save()
+            return redirect('settings')
+
+    return render(request, template_name='settings.html', context={'form': settings_form})
