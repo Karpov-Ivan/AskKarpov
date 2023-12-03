@@ -46,6 +46,7 @@ main > .container {
     color: white;
     margin-right: 50px;
     max-width: 500px;
+    white-space: nowrap;
 }
 
 .row.user .setting{

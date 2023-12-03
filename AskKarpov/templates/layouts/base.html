@@ -23,26 +23,29 @@
                     <a href="{% url 'ask' %}" class="btn btn-outline-success ms-2">Ask!</a>
                 </form>
             </div>
-            <div class="row user" style="display: none;">
-                <div class="col-4">
+            {% if user.is_authenticated %}
+            <div class="row user">
+                <div class="col-5">
                     <img src="{% static '/img/css_ava.png' %}" alt="" class="avatar"/>
                 </div>
-                <div class="col-8">
+                <div class="col-7">
                     <div class="username">
-                        Mr.Pepper
+                        {{ user.username }}
                     </div>
                     <div class="d-flex justify-content-between">
-                        <a class="setting" href="{%url 'settings'%}">Setting</a>
-                        <a class="log-out" href="{%url 'logout'%}">Log out</a>
+                        <a class="setting" href="{% url 'settings' %}">Setting</a>
+                        <a class="log-out" href="{% url 'logout' %}">Log out</a>
                     </div>
                 </div>
             </div>
+            {% else %}
             <div class="row nouser">
                 <div class="d-flex justify-content-between">
-                    <a class="log-in" href="{%url 'login'%}">Log in</a>
-                    <a class="register" href="{%url 'signup'%}">Register</a>
+                    <a class="log-in" href="{% url 'login' %}">Log in</a>
+                    <a class="register" href="{% url 'signup' %}">Register</a>
                 </div>
             </div>
+            {% endif %}
         </div>
     </nav>
 </header>

@@ -8,9 +8,10 @@
 <h1>Log In</h1>
 
 <form action="/login" method="post" class="form-horizontal">
+    {% csrf_token %}
     {% bootstrap_form form %}
     <div class="form-group row">
-        <div class="col-sm-10 offset-sm-2">
+        <div class="col-sm-10">
             <button type="submit" class="btn btn-primary">LOG IN!</button>
         </div>
     </div>

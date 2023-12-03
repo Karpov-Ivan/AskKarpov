@@ -1,12 +1,14 @@
 {% extends 'layouts/base.html' %}
 
+{% load django_bootstrap5 %}
+
 {% block content %}
 
 {% include 'components/question-item.html' %}
 
 <br>
 
- <div class="answer-div">
+<div class="answer-div">
     {% for answer in questions %}
 
     {% include 'components/answer-item.html' %}
@@ -15,13 +17,12 @@
 
     {% include 'components/paginate-item.html' %}
 
- </div>
+</div>
 
- <form class="form-ask">
-   <div class="form-group">
-     <textarea class="form-control" id="exampleTextarea" rows="7" placeholder="Enter your answer here..."></textarea>
-   </div>
-   <button type="submit" class="btn btn-secondary mt-3 mb-3">Answer</button>
- </form>
+<form method="post" class="form-ask">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-secondary mt-3 mb-3">Answer</button>
+</form>
 
 {% endblock %}
