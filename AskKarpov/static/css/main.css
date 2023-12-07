@@ -12,6 +12,7 @@ main > .container {
 .question-image {
     max-width: 150px;
     max-height: 150px;
+    margin-bottom: 10px;
 }
 
 .question-title {

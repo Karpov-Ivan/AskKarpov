@@ -2,8 +2,8 @@
 
 <div class="row question">
     <div class="col-3">
-        {% if question.profile.avatar %}
-        <img src="{{ question.asker.profile.avatar.url }}" alt="Avatar" class="question-image"/>
+        {% if question.asker.avatar %}
+        <img src="{{ question.asker.avatar.url }}" alt="Avatar" class="question-image"/>
         {% else %}
         <img src="{% static '/img/css_ava.png' %}" alt="Default Avatar" class="question-image"/>
         {% endif %}

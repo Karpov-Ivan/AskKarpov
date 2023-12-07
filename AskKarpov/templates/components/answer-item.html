@@ -2,8 +2,8 @@
 
 <div class="row answer" id="answer-{{ answer_id }}">
     <div class="col-3">
-        {% if answer.profile.avatar %}
-        <img src="{{ answer.author.profile.avatar.url }}" alt="Avatar" class="question-image"/>
+        {% if answer.author.avatar %}
+        <img src="{{ answer.author.avatar.url }}" alt="Avatar" class="question-image"/>
         {% else %}
         <img src="{% static '/img/css_ava.png' %}" alt="Default Avatar" class="question-image"/>
         {% endif %}

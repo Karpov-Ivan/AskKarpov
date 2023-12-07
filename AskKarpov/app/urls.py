@@ -1,5 +1,7 @@
 from django.urls import path
 from app import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -12,3 +14,5 @@ urlpatterns = [
     path('ask', views.ask, name='ask'),
     path('settings', views.settings, name='settings'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

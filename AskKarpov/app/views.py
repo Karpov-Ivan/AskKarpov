@@ -5,10 +5,11 @@ from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
-from .forms import LoginForm, RegisterForm, AnswerForm, ProfileForm, AskQuestionForm
 from django.urls import reverse
-from .models import Question
 from django.db import transaction
+from django.forms.models import model_to_dict
+from .models import Question
+from .forms import LoginForm, RegisterForm, AnswerForm, ProfileForm, AskQuestionForm
 
 
 def paginate(request, objects, per_page=10):
@@ -56,8 +57,6 @@ def question(request, question_id):
 
                 anchor = f'#answer-{answer.id}'
                 return HttpResponseRedirect(reverse('question', args=[question_id]) + f'?page={page_number}' + anchor)
-        else:
-            answer_form = AnswerForm()
 
         return render(request, template_name='question.html',
                       context={'question': item, 'questions': paginate(request, answers), 'form': answer_form})
@@ -142,11 +141,10 @@ def ask(request):
 
 @login_required(login_url='login', redirect_field_name='continue')
 def settings(request):
-    user = request.user
-    settings_form = ProfileForm(instance=user)
-
+    if request.method == 'GET':
+        settings_form = ProfileForm(initial=model_to_dict(request.user))
     if request.method == 'POST':
-        settings_form = ProfileForm(request.POST, request.FILES, instance=user)
+        settings_form = ProfileForm(request.POST, request.FILES, instance=request.user)
         if settings_form.is_valid():
             settings_form.save()
             return redirect('settings')

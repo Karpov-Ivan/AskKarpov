@@ -11,7 +11,16 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
-    <p>Currently avatar: {{ request.user.profile.avatar }}</p>
+
+    {% if request.user.profile.avatar %}
+    <div>
+        <img src="{{ request.user.profile.avatar.url }}" alt="Profile avatar" class="question-image"/>
+    </div>
+    {% else %}
+    <div>
+        <img src="{% static '/img/css_ava.png' %}" alt="Default Avatar" class="question-image"/>
+    </div>
+    {% endif %}
 
     <div class="form-group row">
         <div class="col-sm-10">

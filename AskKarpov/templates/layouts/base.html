@@ -26,7 +26,15 @@
             {% if user.is_authenticated %}
             <div class="row user">
                 <div class="col-5">
-                    <img src="{% static '/img/css_ava.png' %}" alt="" class="avatar"/>
+                    {% if request.user.profile.avatar %}
+                    <div>
+                        <img src="{{ request.user.profile.avatar.url }}" alt="Profile avatar" class="avatar"/>
+                    </div>
+                    {% else %}
+                    <div>
+                        <img src="{% static '/img/css_ava.png' %}" alt="Default Avatar" class="avatar"/>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="col-7">
                     <div class="username">

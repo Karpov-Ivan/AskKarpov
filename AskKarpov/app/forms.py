@@ -63,16 +63,12 @@ class AnswerForm(forms.Form):
         return answer
 
 
-class ProfileForm(UserChangeForm):
+class ProfileForm(forms.ModelForm):
     avatar = forms.ImageField(required=False)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'avatar']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields.pop('password')
+        fields = ['username', 'email']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -86,19 +82,14 @@ class ProfileForm(UserChangeForm):
 
         return cleaned_data
 
-    def save(self, commit=True):
-        user = super().save(commit)
-        avatar = self.cleaned_data['avatar']
+    def save(self, **kwargs):
+        user = super().save(**kwargs)
 
-        if commit:
-            if hasattr(user, 'profile'):
-                profile = user.profile
-                if avatar:
-                    profile.avatar = avatar
-                profile.save()
-            else:
-                if avatar:
-                    Profile.objects.create(user=user, avatar=avatar)
+        profile = user.profile
+        received_avatar = self.cleaned_data.get('avatar')
+        if received_avatar:
+            profile.avatar = self.cleaned_data.get('avatar')
+            profile.save()
 
         return user
 
