@@ -7,12 +7,12 @@
         {% else %}
         <img src="{% static '/img/css_ava.png' %}" alt="Default Avatar" class="question-image"/>
         {% endif %}
-        <div class="input-group">
-            <div class="input-group-prepend">
+        <div class="like-section-answer input-group">
+            <div class="input-group-prepend" data-id="{{ answer.id }}">
                 <button class="btn btn-outline-secondary" type="button" id="subtractBtn">-</button>
             </div>
             <input type="text" class="form-control text-center" id="counterValue" value={{ answer.rating }}>
-            <div class="input-group-append">
+            <div class="input-group-append" data-id="{{ answer.id }}">
                 <button class="btn btn-outline-secondary" type="button" id="addBtn">+</button>
             </div>
         </div>

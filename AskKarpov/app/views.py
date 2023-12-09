@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.core.paginator import Paginator
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.urls import reverse
 from django.db import transaction
 from django.forms.models import model_to_dict
-from .models import Question
+from .models import Question, LikeQuestion, Answer, LikeAnswer, Tag, Profile
 from .forms import LoginForm, RegisterForm, AnswerForm, ProfileForm, AskQuestionForm
 
 
@@ -28,8 +28,13 @@ def paginate(request, objects, per_page=10):
 def index(request):
     try:
         questions = Question.objects.new()
+        popular_tags = Tag.objects.get_popular_tags()
+        top_users = Profile.objects.get_top_users_of_week()
+
         return render(request, template_name='index.html',
-                      context={'questions': paginate(request, questions), 'user': request.user})
+                      context={'questions': paginate(request, questions),
+                               'popular_tags': popular_tags,
+                               'top_users': top_users})
     except Question.DoesNotExist:
         raise Http404("Вопросы не найдены")
 
@@ -39,6 +44,8 @@ def question(request, question_id):
     try:
         item = Question.objects.get(id=question_id)
         answers = item.answers.new()
+        popular_tags = Tag.objects.get_popular_tags()
+        top_users = Profile.objects.get_top_users_of_week()
 
         if request.method == 'GET':
             answer_form = AnswerForm()
@@ -59,7 +66,11 @@ def question(request, question_id):
                 return HttpResponseRedirect(reverse('question', args=[question_id]) + f'?page={page_number}' + anchor)
 
         return render(request, template_name='question.html',
-                      context={'question': item, 'questions': paginate(request, answers), 'form': answer_form})
+                      context={'question': item,
+                               'questions': paginate(request, answers),
+                               'popular_tags': popular_tags,
+                               'form': answer_form,
+                               'top_users': top_users})
     except Question.DoesNotExist:
         raise Http404("Вопрос не найден")
 
@@ -68,8 +79,13 @@ def question(request, question_id):
 def hot_question(request):
     try:
         best_questions = Question.objects.best()
+        popular_tags = Tag.objects.get_popular_tags()
+        top_users = Profile.objects.get_top_users_of_week()
+
         return render(request, template_name='hot-question.html',
-                      context={'questions': paginate(request, best_questions)})
+                      context={'questions': paginate(request, best_questions),
+                               'popular_tags': popular_tags,
+                               'top_users': top_users})
     except Question.DoesNotExist:
         raise Http404("Лучшие вопросы не найдены")
 
@@ -78,14 +94,23 @@ def hot_question(request):
 def tag(request, tag_name):
     try:
         questions_with_tag = Question.objects.tag(tag_name=tag_name)
+        popular_tags = Tag.objects.get_popular_tags()
+        top_users = Profile.objects.get_top_users_of_week()
+
         return render(request, template_name='tag.html',
-                      context={'questions': paginate(request, questions_with_tag), 'tags': tag_name})
+                      context={'questions': paginate(request, questions_with_tag),
+                               'tags': tag_name,
+                               'popular_tags': popular_tags,
+                               'top_users': top_users})
     except Question.DoesNotExist:
         raise Http404("Вопросы по тэгу не найдены")
 
 
 @csrf_protect
 def login(request):
+    popular_tags = Tag.objects.get_popular_tags()
+    top_users = Profile.objects.get_top_users_of_week()
+
     if request.method == 'GET':
         login_form = LoginForm(request.POST)
     if request.method == 'POST':
@@ -99,7 +124,9 @@ def login(request):
                 login_form.add_error('username', "Wrong password and user does not exist.")
                 login_form.add_error('password', "Wrong password and user does not exist.")
 
-    return render(request, template_name='login.html', context={"form": login_form})
+    return render(request, template_name='login.html', context={'form': login_form,
+                                                                'popular_tags': popular_tags,
+                                                                'top_users': top_users})
 
 
 def logout(request):
@@ -107,7 +134,11 @@ def logout(request):
     return redirect(reverse('login'))
 
 
+@csrf_protect
 def signup(request):
+    popular_tags = Tag.objects.get_popular_tags()
+    top_users = Profile.objects.get_top_users_of_week()
+
     if request.method == 'GET':
         user_form = RegisterForm()
     if request.method == 'POST':
@@ -122,11 +153,17 @@ def signup(request):
             else:
                 user_form.add_error(None, error="User saving error!")
 
-    return render(request, template_name='signup.html', context={"form": user_form})
+    return render(request, template_name='signup.html', context={'form': user_form,
+                                                                 'popular_tags': popular_tags,
+                                                                 'top_users': top_users})
 
 
+@csrf_protect
 @login_required(login_url='login', redirect_field_name='continue')
 def ask(request):
+    popular_tags = Tag.objects.get_popular_tags()
+    top_users = Profile.objects.get_top_users_of_week()
+
     if request.method == 'GET':
         form = AskQuestionForm()
     if request.method == 'POST':
@@ -136,11 +173,17 @@ def ask(request):
                 question = form.save(user=request.user)
                 return redirect('question', question_id=question.id)
 
-    return render(request, template_name='ask.html', context={'form': form})
+    return render(request, template_name='ask.html', context={'form': form,
+                                                              'popular_tags': popular_tags,
+                                                              'top_users': top_users})
 
 
+@csrf_protect
 @login_required(login_url='login', redirect_field_name='continue')
 def settings(request):
+    popular_tags = Tag.objects.get_popular_tags()
+    top_users = Profile.objects.get_top_users_of_week()
+
     if request.method == 'GET':
         settings_form = ProfileForm(initial=model_to_dict(request.user))
     if request.method == 'POST':
@@ -149,4 +192,50 @@ def settings(request):
             settings_form.save()
             return redirect('settings')
 
-    return render(request, template_name='settings.html', context={'form': settings_form})
+    return render(request, template_name='settings.html', context={'form': settings_form,
+                                                                   'popular_tags': popular_tags,
+                                                                   'top_users': top_users})
+
+
+@csrf_protect
+@login_required(login_url='login', redirect_field_name='continue')
+def like_question(request):
+    id = request.POST.get('question_id')
+    question = get_object_or_404(Question, id=id)
+    LikeQuestion.objects.toggle_like(user=request.user.profile, question=question, positive=True)
+    count = Question.objects.rat(question_id=id)
+
+    return JsonResponse({'count': count})
+
+
+@csrf_protect
+@login_required(login_url='login', redirect_field_name='continue')
+def dislike_question(request):
+    id = request.POST.get('question_id')
+    question = get_object_or_404(Question, id=id)
+    LikeQuestion.objects.toggle_like(user=request.user.profile, question=question, positive=False)
+    count = Question.objects.rat(question_id=id)
+
+    return JsonResponse({'count': count})
+
+
+@csrf_protect
+@login_required(login_url='login', redirect_field_name='continue')
+def like_answer(request):
+    id = request.POST.get('answer_id')
+    answer = get_object_or_404(Answer, id=id)
+    LikeAnswer.objects.toggle_like(user=request.user.profile, answer=answer, positive=True)
+    count = Answer.objects.rat(question_id=id)
+
+    return JsonResponse({'count': count})
+
+
+@csrf_protect
+@login_required(login_url='login', redirect_field_name='continue')
+def dislike_answer(request):
+    id = request.POST.get('answer_id')
+    answer = get_object_or_404(Answer, id=id)
+    LikeAnswer.objects.toggle_like(user=request.user.profile, answer=answer, positive=False)
+    count = Answer.objects.rat(question_id=id)
+
+    return JsonResponse({'count': count})

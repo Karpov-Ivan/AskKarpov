@@ -38,7 +38,7 @@
                 </div>
                 <div class="col-7">
                     <div class="username">
-                        {{ user.username }}
+                        {{ request.user.username }}
                     </div>
                     <div class="d-flex justify-content-between">
                         <a class="setting" href="{% url 'settings' %}">Setting</a>
@@ -72,20 +72,16 @@
                 <div class="row">
                     <h2>Popular tags</h2>
                     <div class="tags">
-                        <span class="badge bg-primary">Python</span>
-                        <span class="badge bg-secondary">CSS</span>
-                        <span class="badge bg-success">Voloshin</span>
-                        <span class="badge bg-danger">Django</span>
-                        <span class="badge bg-dark">Vk</span>
+                        {% for tag in popular_tags %}
+                        <a href="{% url 'tag' tag.name %}">{{ tag.name }}</a>
+                        {% endfor %}
                     </div>
                     <br/>
                     <h2 class="best-members">Best members</h2>
                     <ul class="list-group">
-                        <li class="list-group-item"><a href="">Mr.Freeman</a></li>
-                        <li class="list-group-item"><a href="">A second item</a></li>
-                        <li class="list-group-item"><a href="">A third item</a></li>
-                        <li class="list-group-item"><a href="">A fourth item</a></li>
-                        <li class="list-group-item"><a href="">And a fifth one</a></li>
+                        {% for user in top_users %}
+                        <li class="list-group-item"><a>{{ user.user__username }}</a></li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -98,5 +94,6 @@
 </footer>
 
 <script src="{% static '/js/bootstrap.js' %}"></script>
+<script src="{% static '/js/main.js' %}"></script>
 </body>
 </html>

@@ -5,7 +5,12 @@
 {% block content %}
 
 <div class="row">
-    <h1>Hot Questions</h1>
+    <div class="col-5">
+        <h1>Hot Questions</h1>
+    </div>
+    <div class="col-7">
+        <a href="{% url 'index' %}">New Questions</a>
+    </div>
 </div>
 
 {% for question in questions %}
