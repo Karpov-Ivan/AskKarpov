@@ -41,6 +41,13 @@ class AnswerManager(models.Manager):
 
         return positive_likes - negative_likes
 
+    def set_correct_answer(self, answer_id, user):
+        answer = self.get(id=answer_id)
+
+        if user == answer.question.asker.user:
+            answer.correct = not answer.correct
+            answer.save()
+
 
 class QuestionLikeManager(models.Manager):
     def toggle_like(self, user, question, positive):

@@ -97,3 +97,29 @@ for (let item of items_answer) {
             });
     })
 }
+
+const items_answer_correct_check = document.getElementsByClassName('correct-section-answer');
+
+for (let item of items_answer_correct_check) {
+    const [correct_check, correct] = item.children;
+
+    correct_check.addEventListener('click', () => {
+        const formData = new FormData();
+        formData.append('answer_id', correct_check.dataset.id)
+        const csrfToken = getCookie('csrftoken');
+
+        const request = new Request('/correct-answer', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+        });
+
+        fetch(request)
+            .then((response) => response.json())
+            .then((data) => {
+                correct.innerHTML = data.correct;
+            });
+    })
+}

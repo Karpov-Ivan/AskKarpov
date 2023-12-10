@@ -36,7 +36,7 @@ def index(request):
                                'popular_tags': popular_tags,
                                'top_users': top_users})
     except Question.DoesNotExist:
-        raise Http404("Вопросы не найдены")
+        raise Http404("No questions found")
 
 
 @login_required(login_url='login', redirect_field_name='continue')
@@ -72,7 +72,7 @@ def question(request, question_id):
                                'form': answer_form,
                                'top_users': top_users})
     except Question.DoesNotExist:
-        raise Http404("Вопрос не найден")
+        raise Http404("The question was not found")
 
 
 @login_required(login_url='login', redirect_field_name='continue')
@@ -87,7 +87,7 @@ def hot_question(request):
                                'popular_tags': popular_tags,
                                'top_users': top_users})
     except Question.DoesNotExist:
-        raise Http404("Лучшие вопросы не найдены")
+        raise Http404("No better questions found")
 
 
 @login_required(login_url='login', redirect_field_name='continue')
@@ -103,7 +103,7 @@ def tag(request, tag_name):
                                'popular_tags': popular_tags,
                                'top_users': top_users})
     except Question.DoesNotExist:
-        raise Http404("Вопросы по тэгу не найдены")
+        raise Http404("Questions about the tag were not found")
 
 
 @csrf_protect
@@ -129,6 +129,8 @@ def login(request):
                                                                 'top_users': top_users})
 
 
+@csrf_protect
+@login_required(login_url='login', redirect_field_name='continue')
 def logout(request):
     auth_logout(request)
     return redirect(reverse('login'))
@@ -239,3 +241,14 @@ def dislike_answer(request):
     count = Answer.objects.rat(question_id=id)
 
     return JsonResponse({'count': count})
+
+
+@csrf_protect
+@login_required(login_url='login', redirect_field_name='continue')
+def correct_answer(request):
+    id = request.POST.get('answer_id')
+    answer = get_object_or_404(Answer, id=id)
+    Answer.objects.set_correct_answer(answer_id=id, user=request.user)
+    text_correct = "No correct!" if answer.correct else "Correct!"
+
+    return JsonResponse({'correct': text_correct})

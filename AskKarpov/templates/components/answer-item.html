@@ -20,14 +20,16 @@
     <div class="col-9">
         <div class="question-text">{{ answer.text }}</div>
         <div class="question-actions">
-            <div class="form-check">
-                {% if answer.correct %}
-                <input type="checkbox" class="form-check-input" id="correct{{ answer.id }}" checked>
-                {% endif %}
-                {% if not answer.correct %}
-                <input type="checkbox" class="form-check-input" id="correct{{ answer.id }}" !checked>
-                {% endif %}
-                <label class="form-check-label" for="correct{{ answer.id }}">Correct!</label>
+            <div class="correct-section-answer form-check">
+                <input type="checkbox" data-id="{{ answer.id }}" class="form-check-input" id="correct{{ answer.id }}"
+                       {% if answer.correct %}checked{% endif %}>
+                <label class="form-check-label" for="correct{{ answer.id }}">
+                    {% if answer.correct %}
+                    Correct!
+                    {% else %}
+                    No correct!
+                    {% endif %}
+                </label>
             </div>
         </div>
     </div>

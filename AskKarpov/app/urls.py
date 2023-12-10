@@ -17,6 +17,7 @@ urlpatterns = [
     path('dislike-question', views.dislike_question, name='dislike-question'),
     path('like-answer', views.like_answer, name='like-answer'),
     path('dislike-answer', views.dislike_answer, name='dislike-answer'),
+    path('correct-answer', views.correct_answer, name='correct-answer'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
