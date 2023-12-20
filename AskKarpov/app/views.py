@@ -203,6 +203,9 @@ def settings(request):
 @login_required(login_url='login', redirect_field_name='continue')
 def like_question(request):
     id = request.POST.get('question_id')
+    #q = Question.objects.filter(id=id).first()
+    #if not q:
+        #return JsonResponse({'status': 'fail'})
     question = get_object_or_404(Question, id=id)
     LikeQuestion.objects.toggle_like(user=request.user.profile, question=question, positive=True)
     count = Question.objects.rat(question_id=id)
