@@ -1,7 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.db.models import Count, Sum
 from django.utils import timezone
+from django.db.models import Count, Sum
+from django.contrib.auth.models import User
 
 
 class QuestionManager(models.Manager):

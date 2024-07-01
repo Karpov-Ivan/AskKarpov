@@ -1,0 +1,35 @@
+upstream askkarpov {
+    server 127.0.0.1:8000;
+}
+
+server {
+    listen 80 default_server;
+    server_name askkarpov.com;
+
+    error_log /usr/local/var/log/nginx/askkarpov_error.log;
+    access_log /usr/local/var/log/nginx/askkarpov_access.log;
+
+    location /static {
+        alias /Users/ivankarpov/Desktop/Web/AskKarpov/AskKarpov/static/;
+        expires 30d;
+        add_header Cache-Control "public, max-age=2592000";
+        gzip on;
+        gzip_types text/plain text/css application/json application/javascript image/jpeg;
+    }
+
+    location /uploads {
+        alias /Users/ivankarpov/Desktop/AskKarpov/AskKarpov/uploads/;
+        expires 30d;
+        add_header Cache-Control "public, max-age=2592000";
+        gzip on;
+        gzip_types text/plain text/css application/json application/javascript image/jpeg;
+    }
+
+    location / {
+        proxy_pass http://askkarpov;
+        proxy_set_header Host $host;
+        proxy_cache mycache;
+        proxy_cache_valid 200 302 10m;
+        proxy_cache_valid 404      1m;
+    }
+}

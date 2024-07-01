@@ -1,7 +1,7 @@
 from django import forms
+from django.db import transaction
 from django.contrib.auth.forms import UserChangeForm
 from .models import User, Profile, Answer, Tag, Question
-from django.db import transaction
 
 
 class LoginForm(forms.Form):
@@ -40,11 +40,13 @@ class RegisterForm(forms.ModelForm):
             user = User.objects.get(username=username, email=email)
             self.add_error('username', 'User with this username or email already exists.')
             self.add_error('email', 'User with this username or email already exists.')
+
             return None
         except User.DoesNotExist:
             user = User.objects.create_user(**self.cleaned_data)
             if avatar is not None:
                 Profile.objects.create(user=user, avatar=avatar)
+
             return user
 
 
@@ -60,6 +62,7 @@ class AnswerForm(forms.Form):
     def save(self, question, author):
         answer_text = self.cleaned_data.get('answer_text')
         answer = Answer.objects.create(text=answer_text, question=question, author=author, correct=False)
+
         return answer
 
 

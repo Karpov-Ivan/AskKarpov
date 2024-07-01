@@ -1,7 +1,7 @@
-from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
-from app.models import Profile, Question, Answer, Tag, LikeQuestion, LikeAnswer
 import random
+from django.contrib.auth.models import User
+from django.core.management.base import BaseCommand
+from app.models import Profile, Question, Answer, Tag, LikeQuestion, LikeAnswer
 
 
 class Command(BaseCommand):
@@ -9,6 +9,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('ratio', type=int, help='Coefficient for data population')
+
 
     def handle(self, *args, **options):
         ratio = options['ratio']
