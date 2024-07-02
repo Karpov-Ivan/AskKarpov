@@ -19,6 +19,8 @@ urlpatterns = [
     path('like-answer', views.like_answer, name='like-answer'),
     path('dislike-answer', views.dislike_answer, name='dislike-answer'),
     path('correct-answer', views.correct_answer, name='correct-answer'),
+    path('search', views.search, name='search'),
+    path('autocomplete', views.autocomplete, name='autocomplete'),
 ]
 
 

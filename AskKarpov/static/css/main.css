@@ -215,3 +215,23 @@ main > .container {
 .bd-mode-toggle .dropdown-menu .active .bi {
     display: block !important;
 }
+
+.autocomplete-results {
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    width: 30%;
+    background-color: white;
+    margin-left: 10%;
+    margin-top: 3%;
+}
+
+.autocomplete-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.autocomplete-item:hover {
+    background-color: #f0f0f0;
+}

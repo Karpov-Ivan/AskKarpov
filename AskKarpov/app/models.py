@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils import timezone
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, F
 from django.contrib.auth.models import User
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector, TrigramSimilarity
 
 
 class QuestionManager(models.Manager):
@@ -24,6 +25,23 @@ class QuestionManager(models.Manager):
         question.save()
 
         return positive_likes - negative_likes
+
+    def search(self, query):
+        search_vector_ru = SearchVector('title', 'text', config='russian')
+        search_vector_en = SearchVector('title', 'text', config='english')
+        search_query_ru = SearchQuery(query, config='russian')
+        search_query_en = SearchQuery(query, config='english')
+
+        rank_ru = SearchRank(search_vector_ru, search_query_ru)
+        rank_en = SearchRank(search_vector_en, search_query_en)
+
+        results = self.annotate(
+            rank_ru=rank_ru,
+            rank_en=rank_en,
+            total_rank=(rank_ru + rank_en)
+        ).filter(total_rank__gte=0.1).order_by('-total_rank')[:50]
+
+        return results
 
 
 class AnswerManager(models.Manager):

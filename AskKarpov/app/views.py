@@ -275,3 +275,31 @@ def correct_answer(request):
     text_correct = "No correct!" if answer.correct else "Correct!"
 
     return JsonResponse({'correct': text_correct})
+
+
+@login_required(login_url='login', redirect_field_name='continue')
+def search(request):
+    popular_tags = get_popular_tags()
+    top_users = get_top_users()
+
+    query = request.GET.get('q')
+    if query:
+        results = Question.objects.search(query)
+    else:
+        results = Question.objects.none()
+
+    return render(request, 'search_results.html', context={'questions': results,
+                                                           'popular_tags': popular_tags,
+                                                           'top_users': top_users})
+
+
+@login_required(login_url='login', redirect_field_name='continue')
+def autocomplete(request):
+    if 'term' in request.GET:
+        query = request.GET.get('term')
+        qs = Question.objects.search(query)[:10]
+        data = [{'id': q.id, 'title': q.title} for q in qs]
+
+        return JsonResponse(data, safe=False)
+
+    return JsonResponse([], safe=False)

@@ -1,0 +1,18 @@
+{% extends 'layouts/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+  <h1>Search Results</h1>
+  {% if questions %}
+    {% for question in questions %}
+
+    {% include 'components/question-item.html' %}
+
+    {% endfor %}
+  {% else %}
+    <p>No results found</p>
+  {% endif %}
+
+{% endblock %}
