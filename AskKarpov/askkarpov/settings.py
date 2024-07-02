@@ -115,6 +115,14 @@ CRONJOBS = [
 
 CRONTAB_LOCK_JOBS = True
 
+# Cache
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        'LOCATION': os.path.join(BASE_DIR, 'cache'),
+    }
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 

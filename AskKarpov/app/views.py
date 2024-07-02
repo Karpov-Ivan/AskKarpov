@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse
 from django.db import transaction
+from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.forms.models import model_to_dict
 from django.contrib.auth import logout as auth_logout
@@ -24,12 +25,34 @@ def paginate(request, objects, per_page=10):
     return page
 
 
+def get_popular_tags():
+    cache_key = 'popular_tags'
+    tags = cache.get(cache_key)
+
+    if not tags:
+        tags = Tag.objects.get_popular_tags()
+        cache.set(cache_key, tags, 300)
+
+    return tags
+
+
+def get_top_users():
+    cache_key = 'top_users'
+    users = cache.get(cache_key)
+
+    if not users:
+        users = Profile.objects.get_top_users_of_week()
+        cache.set(cache_key, users, 300)
+
+    return users
+
+
 @login_required(login_url='login', redirect_field_name='continue')
 def index(request):
     try:
         questions = Question.objects.new()
-        popular_tags = Tag.objects.get_popular_tags()
-        top_users = Profile.objects.get_top_users_of_week()
+        popular_tags = get_popular_tags()
+        top_users = get_top_users()
 
         return render(request, template_name='index.html',
                       context={'questions': paginate(request, questions),
@@ -44,8 +67,8 @@ def question(request, question_id):
     try:
         item = Question.objects.get(id=question_id)
         answers = item.answers.new()
-        popular_tags = Tag.objects.get_popular_tags()
-        top_users = Profile.objects.get_top_users_of_week()
+        popular_tags = get_popular_tags()
+        top_users = get_top_users()
 
         if request.method == 'GET':
             answer_form = AnswerForm()
@@ -79,8 +102,8 @@ def question(request, question_id):
 def hot_question(request):
     try:
         best_questions = Question.objects.best()
-        popular_tags = Tag.objects.get_popular_tags()
-        top_users = Profile.objects.get_top_users_of_week()
+        popular_tags = get_popular_tags()
+        top_users = get_top_users()
 
         return render(request, template_name='hot-question.html',
                       context={'questions': paginate(request, best_questions),
@@ -94,8 +117,8 @@ def hot_question(request):
 def tag(request, tag_name):
     try:
         questions_with_tag = Question.objects.tag(tag_name=tag_name)
-        popular_tags = Tag.objects.get_popular_tags()
-        top_users = Profile.objects.get_top_users_of_week()
+        popular_tags = get_popular_tags()
+        top_users = get_top_users()
 
         return render(request, template_name='tag.html',
                       context={'questions': paginate(request, questions_with_tag),
@@ -108,8 +131,8 @@ def tag(request, tag_name):
 
 @csrf_protect
 def login(request):
-    popular_tags = Tag.objects.get_popular_tags()
-    top_users = Profile.objects.get_top_users_of_week()
+    popular_tags = get_popular_tags()
+    top_users = get_top_users()
 
     if request.method == 'GET':
         login_form = LoginForm(request.POST)
@@ -138,8 +161,8 @@ def logout(request):
 
 @csrf_protect
 def signup(request):
-    popular_tags = Tag.objects.get_popular_tags()
-    top_users = Profile.objects.get_top_users_of_week()
+    popular_tags = get_popular_tags()
+    top_users = get_top_users()
 
     if request.method == 'GET':
         user_form = RegisterForm()
@@ -163,8 +186,8 @@ def signup(request):
 @csrf_protect
 @login_required(login_url='login', redirect_field_name='continue')
 def ask(request):
-    popular_tags = Tag.objects.get_popular_tags()
-    top_users = Profile.objects.get_top_users_of_week()
+    popular_tags = get_popular_tags()
+    top_users = get_top_users()
 
     if request.method == 'GET':
         form = AskQuestionForm()
@@ -183,8 +206,8 @@ def ask(request):
 @csrf_protect
 @login_required(login_url='login', redirect_field_name='continue')
 def settings(request):
-    popular_tags = Tag.objects.get_popular_tags()
-    top_users = Profile.objects.get_top_users_of_week()
+    popular_tags = get_popular_tags()
+    top_users = get_top_users()
 
     if request.method == 'GET':
         settings_form = ProfileForm(initial=model_to_dict(request.user))
@@ -203,9 +226,6 @@ def settings(request):
 @login_required(login_url='login', redirect_field_name='continue')
 def like_question(request):
     id = request.POST.get('question_id')
-    #q = Question.objects.filter(id=id).first()
-    #if not q:
-        #return JsonResponse({'status': 'fail'})
     question = get_object_or_404(Question, id=id)
     LikeQuestion.objects.toggle_like(user=request.user.profile, question=question, positive=True)
     count = Question.objects.rat(question_id=id)
