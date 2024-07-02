@@ -109,6 +109,8 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CRON
+# https://crontab.guru
 CRONJOBS = [
     ('0 * * * *', 'app/top.py'),
 ]
