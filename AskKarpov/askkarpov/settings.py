@@ -12,8 +12,10 @@ SECRET_KEY = 'django-insecure-g!okvhr6vuxt7f7@vue5fjbj(e61p3=ib2o(c8b(aleu(=wgb2
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#DEBUG = False
 
 ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 # Application definition
 
@@ -72,6 +74,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
+        #'HOST': 'db',
         'PORT': '5432',
     }
 }
@@ -137,11 +140,11 @@ MEDIA_URL = '/uploads/'
 #STATIC_ROOT = BASE_DIR / 'static/'
 
 # if run locally
-if DEBUG:
-    STATICFILES_DIRS = [
-       os.path.join(BASE_DIR, 'static')
-    ]
+# if DEBUG:
+#     STATICFILES_DIRS = [
+#        os.path.join(BASE_DIR, 'static')
+#     ]
 
-#STATICFILES_DIRS = [
-#    BASE_DIR / 'static'
-#]
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]

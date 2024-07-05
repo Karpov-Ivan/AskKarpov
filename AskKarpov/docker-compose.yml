@@ -1,0 +1,44 @@
+version: '3'
+
+networks:
+  deploy-guide-dev:
+    driver: bridge
+
+services:
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    networks:
+      - deploy-guide-dev
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    container_name: db
+    image: postgres:16
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: askkarpov
+    networks:
+      - deploy-guide-dev
+    volumes:
+      - db_postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  db_postgres_data:
